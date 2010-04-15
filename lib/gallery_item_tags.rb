@@ -36,8 +36,10 @@ module GalleryItemTags
     options[:offset] = tag.attr['offset'] ? tag.attr['offset'].to_i  : 0
     options[:conditions] = { "#{GalleryItem.table_name}.parent_id" => nil}  
     
-    if !tag.attr['keywords'].nil? || !tag.attr['current_keywords'].nil?                                                                                                                                  
+    use_slug_as_keyword = tag.attr['use_slug_as_keyword']
+    if !tag.attr['keywords'].nil? || !tag.attr['current_keywords'].nil? || use_slug_as_keyword
       keywords = !tag.attr['keywords'].nil? ? tag.attr['keywords'].split(',') : []
+      keywords.push(tag.locals.page.slug) if use_slug_as_keyword
       if (tag.attr['current_keywords'] == 'is' || tag.attr['current_keywords'] == 'is_not') && !tag.globals.page.request.parameters['keywords'].nil?
         @current_keywords = tag.globals.page.request.parameters['keywords'].split(',') if !tag.globals.page.request.parameters['keywords'].nil?
         if !@current_keywords.nil? && @current_keywords.length > 0
@@ -117,6 +119,23 @@ module GalleryItemTags
     keys = tag.attr['safe'] ? item.keywords.downcase.gsub(/[\s~\.:;+=]+/, '_') : item.keywords
     keys.gsub(/\,/, joiner);
   end 
+
+  desc %{
+    Usage:
+    <pre><code><r:gallery:item:credits /></code></pre>
+    Provides the Credits string for current gallery item }
+  tag "gallery:item:credits" do |tag|      
+    item = find_item(tag)
+    item.credits
+  end  
+  
+  desc %{
+    }
+  tag "gallery:item:if_credits" do |tag|      
+    item = find_item(tag)
+    
+    tag.expand unless item.credits.nil? || item.credits.empty?
+  end  
   
   desc %{
     Usage:

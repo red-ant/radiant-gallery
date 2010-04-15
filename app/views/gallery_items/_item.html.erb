@@ -2,7 +2,8 @@
   <%= item_label(item) %>
   <%= item_preview(item) %>
   <%= item_buttons(item) %>
+  <div class="credits" id="item_<%= item.id %>_credits" style="display:none;"><%= "#{item.credits}" %></div>
   <div class="description" id="item_<%= item.id %>_description" style="display:none;"><%= "#{item.description}" %></div>
-	<div class="keywords" id="item_<%= item.id %>_keywords" style="display:none;"><%= "#{item.keywords}" %></div>
+  <div class="keywords" id="item_<%= item.id %>_keywords" style="display:none;"><%= "#{item.keywords}" %></div>
   <div class="url" id="item_<%= item.id %>_url" style="display:none;"><%= "#{item.url}" %></div>
 </div>

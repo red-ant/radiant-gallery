@@ -5,16 +5,18 @@
         :loading => "var b = $('popup_save_button'); b.setAttribute('originalValue', b.getAttribute('value')); b.setAttribute('value', 'Saving...'); b.setAttribute('disabled', true);"
     ) do |f| -%>
     <div>
-    	<input type="hidden" id="update-item-popup-id-field" name="id" value="" />
-    	<label for="update-item-popup-name-field">Name:</label> <br />
-      <%= f.text_field :name, :maxlength => 255 %> <br />
-    	<label for="update-item-popup-url-field">URL:</label> <br />
-      <%= f.text_field :url, :maxlength => 255 %> <br />
-    	<label for="update-item-popup-description-field">Description:</label> <br />
-    	<%= f.text_area :description %><br />       
-			<label for='update-item-popup-keywords-field'>Keywords:</label><br/>
-			<%= f.text_field :keywords, :maxlength => 255 %><br/>
-      <%= submit_tag "Save", :id => 'popup_save_button' %> 
+        <input type="hidden" id="update-item-popup-id-field" name="id" value="" />
+        <label for="update-item-popup-name-field">Name:</label> <br />
+        <%= f.text_field :name, :maxlength => 255 %> <br />
+        <label for="update-item-popup-url-field">URL:</label> <br />
+        <%= f.text_field :url, :maxlength => 255 %> <br />
+        <label for="update-item-popup-credits-field">Credits:</label> <br />
+        <%= f.text_field :credits, :maxlength => 255 %> <br />
+        <label for="update-item-popup-description-field">Description:</label> <br />
+        <%= f.text_area :description %><br />       
+        <label for='update-item-popup-keywords-field'>Keywords:</label><br/>
+        <%= f.text_field :keywords, :maxlength => 255 %><br/>
+        <%= submit_tag "Save", :id => 'popup_save_button' %> 
     </div>
     <% end %>
   </div>

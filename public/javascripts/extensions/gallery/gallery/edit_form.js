@@ -10,6 +10,7 @@ Gallery.EditForm = {
 
         var name = item.down('.label a').innerHTML;
         $('edit-item-name').value = (name === '&nbsp;') ? '': name;
+        $('edit-item-credits').value = item.down('.credits').innerHTML;
         $('edit-item-description').value = item.down('.description').innerHTML;
         $('edit-item-url').value = item.down('.url').innerHTML;
         $('edit-item-keywords').value = item.down('.keywords').innerHTML;
@@ -43,6 +44,7 @@ Gallery.EditForm = {
     reset: function(popup) {
         popup.down('form').setAttribute('action', '');
         $('edit-item-name').value = '';
+        $('edit-item-credits').value = '';
         $('edit-item-description').value = '';
         $('edit-item-keywords').value = '';
         $('edit-item-url').value = ''; 
@@ -58,6 +60,7 @@ Gallery.EditForm = {
             method: 'put',
             parameters: {
                 'gallery_item[name]': $('edit-item-name').value,
+                'gallery_item[credits]': $('edit-item-credits').value,
                 'gallery_item[description]': $('edit-item-description').value,
                 'gallery_item[keywords]': $('edit-item-keywords').value,    
                 'gallery_item[url]': $('edit-item-url').value,    
