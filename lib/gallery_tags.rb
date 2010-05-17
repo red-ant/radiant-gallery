@@ -91,30 +91,6 @@ module GalleryTags
     tag.locals.item = @current_gallery
     tag.expand
   end
-
-  tag 'gallery:keywords:if_current' do |tag|    
-    tag.expand if @current_keywords
-  end  
-  
-  tag 'gallery:keywords:unless_current' do |tag|    
-    tag.expand unless @current_keywords
-  end
-  
-  desc %{                 
-    Usage:
-    <pre><code><r:gallery:keywords:current /></code></pre>
-    Provides keywords for current and children galleries, use
-    separator="separator_string" to specify the character between keywords }  
-  tag 'gallery:keywords:current' do |tag|
-    gallery = tag.locals.gallery        
-    content = ""        
-    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '
-    gallery.gallery_keywords.find(:all, :conditions => { :keyword => @current_keywords }).uniq.each do | keyword |
-      tag.locals.uniq_keywords = keyword
-      content << tag.expand
-    end
-    content.blank? @current_keywords.join( joiner ) : content
-  end
   
   desc %{    
     Usage:
@@ -174,9 +150,10 @@ module GalleryTags
     Usage:
     <pre><code><r:gallery:keywords:description /></code></pre>
     Get the description for the current keyword in gallery:keywords loop } 
-  tag 'gallery:keywords:keyword' do |tag|
+  tag 'gallery:keywords:description' do |tag|
     gallery_keyword = tag.locals.uniq_keywords
-    gallery_keyword.description
+    desc = gallery_keyword.description
+    desc.blank? ? "please provide a description" : desc.to_s
   end
   
   desc %{
@@ -193,6 +170,30 @@ module GalleryTags
     gallery_url = File.join(tag.render('url'))
     %{<a href="#{gallery_url[0..-2]}?keywords=#{keyword.gsub(/[\s~\.:;+=]+/, '_')}"#{attributes}>#{keyword}</a>}
   end
+  
+  tag 'gallery:keywords:if_current' do |tag|    
+    tag.expand if @current_keywords
+  end  
+  
+  tag 'gallery:keywords:unless_current' do |tag|    
+    tag.expand unless @current_keywords
+  end
+  
+  desc %{                 
+    Usage:
+    <pre><code><r:gallery:keywords:current /></code></pre>
+    Provides keywords for current and children galleries, use
+    separator="separator_string" to specify the character between keywords }  
+  tag 'gallery:keywords:current' do |tag|
+    gallery = tag.locals.gallery        
+    content = ""        
+    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '
+    gallery.gallery_keywords.find(:all, :conditions => { :keyword => @current_keywords }).uniq.each do | key |
+      tag.locals.uniq_keywords = key
+      content << tag.expand
+    end
+    key = content.blank? ? @current_keywords.join( joiner ) : content
+  end  
   
   tag 'gallery:breadcrumbs' do |tag|
     gallery = find_gallery(tag)
