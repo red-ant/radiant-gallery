@@ -1,5 +1,5 @@
 module GalleryTags
-  #tags available globally, not just on GalleryPages
+  #tags available globally, not just on GalleryPages   
   include Radiant::Taggable
   
   class GalleryTagError < StandardError; end
@@ -91,6 +91,30 @@ module GalleryTags
     tag.locals.item = @current_gallery
     tag.expand
   end
+
+  tag 'gallery:keywords:if_current' do |tag|    
+    tag.expand if @current_keywords
+  end  
+  
+  tag 'gallery:keywords:unless_current' do |tag|    
+    tag.expand unless @current_keywords
+  end
+  
+  desc %{                 
+    Usage:
+    <pre><code><r:gallery:keywords:current /></code></pre>
+    Provides keywords for current and children galleries, use
+    separator="separator_string" to specify the character between keywords }  
+  tag 'gallery:keywords:current' do |tag|
+    gallery = tag.locals.gallery        
+    content = ""        
+    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '
+    gallery.gallery_keywords.find(:all, :conditions => { :keyword => @current_keywords }).uniq.each do | keyword |
+      tag.locals.uniq_keywords = keyword
+      content << tag.expand
+    end
+    content.blank? @current_keywords.join( joiner ) : content
+  end
   
   desc %{    
     Usage:
@@ -108,8 +132,7 @@ module GalleryTags
   tag "gallery:slug" do |tag|
     gallery = tag.locals.gallery
     gallery.slug
-  end
-
+  end 
   
   desc %{                 
     Usage:
@@ -120,7 +143,7 @@ module GalleryTags
     gallery = tag.locals.gallery    
     joiner = tag.attr['separator'] ? tag.attr['separator'] : ' ' 
     keys = tag.attr['safe'] ? gallery.keywords.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery.keywords
-    keys.gsub(/\,/, joiner);
+    keys.gsub(/\,/, joiner)
     tag.expand
   end                            
 
@@ -136,7 +159,7 @@ module GalleryTags
       content << tag.expand
     end
     content
-  end 
+  end  
   
   desc %{
     Usage:
@@ -147,6 +170,15 @@ module GalleryTags
     keys = tag.attr['safe'] ? gallery_keyword.keyword.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery_keyword.keyword
   end
        
+  desc %{
+    Usage:
+    <pre><code><r:gallery:keywords:description /></code></pre>
+    Get the description for the current keyword in gallery:keywords loop } 
+  tag 'gallery:keywords:keyword' do |tag|
+    gallery_keyword = tag.locals.uniq_keywords
+    gallery_keyword.description
+  end
+  
   desc %{
     Usage:
     <pre><code><r:gallery:keywords:link [*options]/></code></pre>
