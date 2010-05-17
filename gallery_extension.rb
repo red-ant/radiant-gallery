@@ -1,5 +1,5 @@
 require 'tempfile'           
-require_dependency 'application_controller'   
+require_dependency Radiant::Version.to_s.to_f < 0.8 ? 'application' : 'application_controller'   
 require_dependency 'open-uri'
 require_dependency 'exifr/jpeg'
 require_dependency 'exifr/tiff'
@@ -35,11 +35,21 @@ class GalleryExtension < Radiant::Extension
   end
   
   def activate
-    init
-       
-    tab "Content" do
-        add_item("Galleries", "/admin/galleries", {:visibility => [:all]}) 
-    end     
+    init       
+    if Radiant::Version.to_s.to_f < 0.9 
+      tab_options = {:visibility => [:all]}
+      
+      if Radiant::Config.table_exists?
+        Radiant::Config["gallery.gallery_based"] == 'true' ? tab_options[:before] = "Pages" : tab_options[:after] = "Layouts"
+      end
+      
+      admin.tabs.add("Galleries", "/admin/galleries", tab_options)      
+    else
+      
+      tab "Content" do
+         add_item("Galleries", "/admin/galleries", {:visibility => [:all]}) 
+      end      
+    end    
 
     admin.page.edit.add :layout_row, 'base_gallery' if admin.respond_to?(:page)
   end      
