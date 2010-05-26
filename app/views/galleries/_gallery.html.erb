@@ -24,8 +24,14 @@ spinner = image('spinner.gif', :class => 'busy', :id => "gallery-busy-#{gallery.
 			<%= spinner %>
 		</span>
 	</td>
-	<td class='keywords'>                                                                                                               
-		<span style='color:#666; font-size:0.75em;padding-left:0.5em;'><%= gallery.keywords if gallery.items.size > 0 && gallery.gallery_keywords.length > 0 %></span>
+	<td class='keywords'>
+		<span style='color:#666; font-size:0.75em;padding-left:0.5em;'> 
+			<% gallery.gallery_keywords.each do |keyword| %>
+				<% unless keyword.keyword.nil? %>
+					<%= link_to keyword.keyword, edit_admin_gallery_keyword_path(gallery, keyword) %>
+				<% end %>
+			<% end if gallery.gallery_keywords.length > 0 %>
+		</span>
 	</td>	
 	<td class="status"><%= gallery.id %></td>
 	<td class="status published-status"><%= gallery.hidden ? 'hidden' : 'visible' %></td>

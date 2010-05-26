@@ -30,8 +30,9 @@ class GalleryExtension < Radiant::Extension
           galleries.resources :children,    :controller => 'galleries', :path_prefix => '/admin/galleries/:parent_id'
           galleries.resources :items,       :controller => 'gallery_items', :member => { :move => :put }
           galleries.resources :importings,  :controller => 'gallery_importings', :member => { :import => :put }
-      end  
-    #end
+          galleries.resources :keywords,    :controller => 'gallery_keywords', :exclude => [ :index ]
+      end
+      
   end
   
   def activate

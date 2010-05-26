@@ -1,0 +1,18 @@
+<div class="form-area"> 
+  <p class="title">
+		<%= f.label :keyword, "Keyword Name" %>
+    <%= f.text_field "keyword", :class => 'textbox', :maxlength => 255 %>
+  </p>
+	<p class="description">
+    <%= f.label :description, "Keyword Description" %>
+  </p>
+	<div> 
+		<%= f.text_area "description", :class => 'textbox', :maxlength => 255 %>
+	</div>                                                                
+</div>
+<p class="buttons">
+  <%= save_model_button(@keyword) %> <%= save_model_and_continue_editing_button(@keyword) %> or <%= link_to "Cancel", admin_galleries_path %> 
+	<% unless @keyword.new_record? %>
+		<%= link_to "Delete", admin_gallery_keyword_path(@gallery, @keyword), :method => :delete, :prompt => "Are you sure you want to delete #{@keyword.keyword} and all its references to other galleries?" %> 	
+	<% end %>
+</p>                                 

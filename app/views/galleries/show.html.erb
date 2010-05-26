@@ -21,7 +21,11 @@
 <% end -%> 
 
 <%= gallery_toolbar %>	
-<%= gallery_zoom_slider %>  
+<%= gallery_zoom_slider %>
+<div style="display:block;clear:both;font-size:0.9em;">
+	<%= link_to 'New Keyword', new_admin_gallery_keyword_path( @gallery ) %><%= "|" unless @gallery.gallery_keywords.empty? %>
+	<%= render :partial => 'keywords', :locals => {:gallery => @gallery, :keywords => @gallery.gallery_keywords } %>
+</div>
   
 <div class="clear">&nbsp;</div>
 
@@ -56,10 +60,6 @@
       <div>      
         <label for="edit-item-description">Description</label>
         <textarea id="edit-item-description" cols="40" rows="12"></textarea>
-      </div>  
-      <div>      
-        <label for="edit-item-keywords">Keywords</label>
-        <input type="text" id="edit-item-keywords" size="30">
       </div>
       <p>
         <img id="edit-spinner" src="/images/admin/spinner.gif" style="display: none;"/>

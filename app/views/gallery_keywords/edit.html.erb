@@ -1,0 +1,12 @@
+<% include_stylesheet 'extensions/gallery/admin/gallery' %>
+<h1 id="new_page">Edit Keyword</h1>
+
+<% form_for :keyword, :url => {:action => :update}, :html => { :method => :put } do |f| -%>
+  <%= render :partial => 'form', :locals => {:f => f} %>
+<% end -%>
+
+<script type="text/javascript">
+	// <![CDATA[
+	  Field.activate('keyword_keyword');
+  // ]]>
+</script>                               

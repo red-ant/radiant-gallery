@@ -1,0 +1,2 @@
+module GalleryKeywordsHelper
+end    

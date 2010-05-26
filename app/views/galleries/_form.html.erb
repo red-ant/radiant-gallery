@@ -15,10 +15,6 @@
   </p>
 	<div>
 		<%= f.text_area "description", :class => 'textbox', :maxlength => 255 %>
-	</div>                                                                
-	<div>     
-		<label for="gallery_keywords"> Keywords for gallery. </label> 
-		<%= f.text_field "keywords", :class => 'textbox', :maxlength => 255 %>
 	</div>
   <p id="advanced_options" style="display: none;">
 		<%= f.check_box :hidden, {:id => 'hide_gallery'} %>

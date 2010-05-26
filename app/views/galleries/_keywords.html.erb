@@ -1,0 +1,6 @@
+<% keywords.each do |keyword| %>
+	<% unless keyword.keyword.nil? %>
+		<%= link_to keyword.keyword, edit_admin_gallery_keyword_path(gallery, keyword) %>
+		<%= ' | ' unless keywords.last == keyword %>
+	<% end %>
+<% end if keywords.length > 0 %>     

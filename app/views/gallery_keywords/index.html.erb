@@ -1,0 +1,20 @@
+<h1 id="gallery_keyword_pages">Manage Gallery Keywords</h1>
+
+<% unless @keywords.nil? %>
+<table>
+ 	<tr>
+		<th>Keyword</th>
+		<th>Description</th>
+		<th>Galleries</th>
+	</tr>
+	<% @keywords.each do |k| %>
+		<tr>
+			<td><%= link_to k.keyword, edit_admin_gallery_keyword_path(k.galleries.length > 0 ? k.galleries.first : 1, k) %></td> 
+			<td><%= k.description %></td>
+			<td><% k.galleries.each do |gallery| %>
+				<%= link_to gallery.name, admin_gallery_path(gallery) %>
+			<% end %></td>						
+		</tr>
+		<% end %>
+	</table>
+<% end %>
