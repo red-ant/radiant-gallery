@@ -1,4 +1,4 @@
-<% include_javascript 'extensions/gallery/dragdrop' %>   
+<% include_javascript Radiant::Version.to_s.to_f < 0.9 ? 'extensions/gallery/dragdrop' : 'admin/dragdrop' %>
 <% content_for :page_css do %>
 .page {
   font-size: 120%;
