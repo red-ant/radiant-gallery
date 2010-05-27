@@ -22,9 +22,31 @@
 
 <%= gallery_toolbar %>	
 <%= gallery_zoom_slider %>
-<div style="display:block;clear:both;font-size:0.9em;">
-	<%= link_to 'New Keyword', new_admin_gallery_keyword_path( @gallery ) %><%= "|" unless @gallery.gallery_keywords.empty? %>
-	<%= render :partial => 'keywords', :locals => {:gallery => @gallery, :keywords => @gallery.gallery_keywords } %>
+<div id="gallery_keywords">
+
+	<h3>Add and Update Keywords</h3>
+
+	<% form_tag set_keywords_admin_gallery_path( @gallery ), :method => :post do %>
+		<% @keywords.each do |keyword| %>
+
+			<% unless keyword.keyword.nil? %>
+
+				<span class="keyword">
+					<%= check_box_tag "keywords[]", keyword.id,  @gallery.gallery_keywords.include?(keyword) %>
+					<%= link_to keyword.keyword, edit_admin_gallery_keyword_path(@gallery, keyword) %>
+					<%= ' | ' %> 
+				</span>
+
+			<% end %>
+
+		<% end if @keywords.length > 0 %>
+		<span class="keyword">
+			<%= text_field_tag 'new_keyword', GalleriesController::DefaultKeyword %>
+		</span>
+		<span class="keyword">
+			 <%= submit_tag "Submit" %>
+		</span>
+	<% end %>
 </div>
   
 <div class="clear">&nbsp;</div>

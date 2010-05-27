@@ -20,7 +20,8 @@ class GalleryExtension < Radiant::Extension
         :member     => {
           :clear_thumbs => :get,
           :reorder => :get, 
-          :update_order => :post
+          :update_order => :post,
+          :set_keywords => :post
         },
         :collection => { 
           :children => :get,

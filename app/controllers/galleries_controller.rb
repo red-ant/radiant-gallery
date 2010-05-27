@@ -1,4 +1,5 @@
 class GalleriesController < ApplicationController
+  DefaultKeyword = 'add new keyword'
   helper :gallery_items
   before_filter :find_gallery, :except => [:index, :list, :new, :create, :reorder, :update_order]
   
@@ -13,6 +14,7 @@ class GalleriesController < ApplicationController
   end
   
   def show
+    @keywords = GalleryKeyword.all
     respond_to do |format|    
       format.html
       format.xml { render :xml => @gallery }
@@ -99,6 +101,30 @@ class GalleriesController < ApplicationController
       end
       redirect_to admin_galleries_url
     end    
+  end 
+  
+  def set_keywords           
+    respond = true
+    
+    @gallery.gallery_keywords = GalleryKeyword.find( params[:keywords] ) if params[:keywords]
+    
+    if params[:new_keyword] && DefaultKeyword != params[:new_keyword]
+
+      @keyword = GalleryKeyword.new( :keyword => params[:new_keyword] )
+      
+      unless @keyword.save && @gallery.gallery_keywords << @keyword 
+        respond = false
+      end
+    end
+    
+    respond_to do |format|                                 
+      if respond == true
+        flash[:notice] = "Your keyword has been saved below."
+      else
+        flash[:error] = "Validation errors occurred while processing this form. Please take a moment to review the form and correct any input errors before continuing."
+      end
+      format.html { redirect_to admin_gallery_url(@gallery)  }
+    end
   end
      
    

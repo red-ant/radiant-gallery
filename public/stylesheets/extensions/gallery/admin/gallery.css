@@ -200,7 +200,28 @@ div#gallery_items_panel_zoom div#track div#handle {
 	border: 1px solid #AAAAAA;
 	font-size:110%;
 	width:98%;
-}                
+} 
+
+#gallery_keywords {
+	display: block;
+	clear: both;
+	font-size: 0.9em;
+	background-color: #ececec;
+	margin: 0 -20px;
+	border-bottom: 1px dashed #999999;
+	padding: 0.5em 20px;
+	border-top: 1px dashed #999999;
+	padding-bottom: 0.5em;
+}
+
+#gallery_keywords h3 {
+	margin: 0 0 0.5em 0;
+	font-size: 1em;
+}
+
+.keyword {
+	color: #333;
+}            
 
 /*#popups {
   height: 100%;
