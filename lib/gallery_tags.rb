@@ -59,10 +59,12 @@ module GalleryTags
     order = (%w[ASC DESC].include?(tag.attr['order'].to_s.upcase)) ? tag.attr['order'] : "ASC"
     options[:order] = "#{by} #{order}"  
     galleries = Gallery.find(:all, options).uniq unless @current_keywords.nil? && tag.attr['current_keywords'] == 'is'
+    
     if !@current_keywords.nil? && tag.attr['current_keywords'] == 'is_not' && galleries.length > 0                                                   
       options.merge!(:conditions => ['galleries.id NOT IN (?) AND hidden =? AND external =?', galleries, false, false])   
       galleries = Gallery.find(:all, options).uniq
     end
+    
     galleries.each do |gallery|
       tag.locals.gallery = gallery
       content << tag.expand
@@ -88,7 +90,7 @@ module GalleryTags
   end
   
   tag 'gallery:current' do |tag|    
-    tag.locals.item = @current_gallery
+    tag.locals.gallery = @current_gallery
     tag.expand
   end
 
@@ -113,7 +115,7 @@ module GalleryTags
       tag.locals.uniq_keywords = keyword
       content << tag.expand
     end
-    content.blank? @current_keywords.join( joiner ) : content
+    content.blank? ? @current_keywords.join( joiner ) : content
   end
   
   desc %{    
@@ -155,7 +157,7 @@ module GalleryTags
     content =''
     gallery = tag.locals.gallery
     gallery.gallery_keywords.uniq.each do |key|
-      tag.locals.uniq_keywords = key
+      tag.locals.uniq_keyword = key
       content << tag.expand
     end
     content
@@ -166,8 +168,8 @@ module GalleryTags
     <pre><code><r:gallery:keywords:keyword [safe='true']/></code></pre>
     Get the keyword of the current gallery:keywords loop } 
   tag 'gallery:keywords:keyword' do |tag|
-    gallery_keyword = tag.locals.uniq_keywords
-    keys = tag.attr['safe'] ? gallery_keyword.keyword.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery_keyword.keyword
+    keyword = tag.locals.uniq_keyword.keyword
+    k = tag.attr['safe'] ? keyword.gsub(/[\s~\.:;+=]+/, '_').downcase : keyword
   end
        
   desc %{
@@ -175,9 +177,7 @@ module GalleryTags
     <pre><code><r:gallery:keywords:description /></code></pre>
     Get the description for the current keyword in gallery:keywords loop } 
   tag 'gallery:keywords:description' do |tag|
-    gallery_keyword = tag.locals.uniq_keywords
-    desc = gallery_keyword.description
-    desc.blank? ? "" : desc.to_s
+    tag.locals.uniq_keyword.description
   end
   
   desc %{
@@ -186,7 +186,7 @@ module GalleryTags
     Get the keyword and creates a link for the current gallery:keywords loop 
     options are rendered inline as key:value pairs i.e. class='' id='', etc.}    
   tag 'gallery:keywords:link' do |tag|
-    keyword = tag.locals.uniq_keywords ? tag.locals.uniq_keywords.keyword : tag.locals.gallery.keywords
+    keyword = tag.locals.uniq_keyword.keyword
     options = tag.attr.dup
     attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
     attributes = " #{attributes}" unless attributes.empty?
@@ -213,7 +213,7 @@ module GalleryTags
     content = ""        
     joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '
     gallery.gallery_keywords.find(:all, :conditions => { :keyword => @current_keywords }).uniq.each do | key |
-      tag.locals.uniq_keywords = key
+      tag.locals.uniq_keyword = key
       content << tag.expand
     end
     key = content.blank? ? @current_keywords.join( joiner ) : content
