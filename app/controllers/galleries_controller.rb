@@ -14,7 +14,7 @@ class GalleriesController < ApplicationController
   end
   
   def show
-    @keywords = GalleryKeyword.all
+    @keywords = GalleryKeyword.all.uniq
     respond_to do |format|    
       format.html
       format.xml { render :xml => @gallery }
