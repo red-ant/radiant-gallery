@@ -29,11 +29,15 @@ class GalleryKeywordsController < ApplicationController
   end
 
 private
-  
+
   def find_keyword
-    @gallery = Gallery.find(params[:gallery_id]) 
-    @keyword = @gallery.gallery_keywords.find(params[:id])
+    @gallery = Gallery.find(params[:gallery_id])
+    begin
+      @keyword = GalleryKeyword.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      edit_admin_gallery_url(@gallery) 
+    end
   rescue ActiveRecord::RecordNotFound
-    redirect_to admin_galleries_url
+    redirect_to admin_gallery_url
   end 
 end
