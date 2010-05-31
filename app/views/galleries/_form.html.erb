@@ -9,6 +9,12 @@
 	<div>
 		<%= f.text_area "description", :class => 'textbox', :maxlength => 255 %>
 	</div>
+
+	<p class="title">
+		<label for="gallery_name">Gallery location</label>
+		<%= f.text_field :location, :class => 'textbox', :maxlength => 25 %>
+	</p>
+
   <p id="advanced_options" class="buttons">                                                 
 		<%= f.check_box :hidden, {:id => 'hide_gallery'} %>
 		<label for="hide_gallery">Hide this gallery in galleries list. </label> 

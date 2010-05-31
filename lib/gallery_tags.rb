@@ -242,6 +242,15 @@ module GalleryTags
     gallery = tag.locals.gallery
     gallery.description
   end  
+
+  desc %{    
+    Usage:
+    <pre><code><r:gallery:location /></code></pre>
+    Provides location for current gallery }
+  tag "gallery:location" do |tag|
+    gallery = tag.locals.gallery
+    gallery.location
+  end
   
   desc %{    
     Usage:
