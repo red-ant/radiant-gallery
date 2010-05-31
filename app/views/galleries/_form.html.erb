@@ -29,7 +29,11 @@
 			<% end %>
 
 		<% end if @keywords.length > 0 %>
+		
+		<div class="spacer">&nbsp;</div>
+		
 		<div class="keyword">
+			<label for="new_keyword">New gallery keyword </label><br/>
 			<%= text_field_tag 'new_keyword', GalleriesController::DefaultKeyword %>
 		</div>
 	</div>
