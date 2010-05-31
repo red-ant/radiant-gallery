@@ -200,17 +200,28 @@ div#gallery_items_panel_zoom div#track div#handle {
 	border: 1px solid #AAAAAA;
 	font-size:110%;
 	width:98%;
+}
+
+#advanced_options.buttons input{
+	display:inline;
+}
+
+#advanced_options.buttons label{
+	display:inline;
+	text-shadow:none !important;
 } 
+
+#content form #advanced_options.buttons, #content form #gallery_keywords{
+	margin: 1em 0;	
+}
+#content form #advanced_options.buttons a, #content form #gallery_keywords a{
+	color: #333;	
+}
 
 #gallery_keywords {
 	display: block;
 	clear: both;
 	font-size: 0.9em;
-	background-color: #ececec;
-	margin: 0 -20px;
-	border-bottom: 1px dashed #999999;
-	padding: 0.5em 20px;
-	border-top: 1px dashed #999999;
 	padding-bottom: 0.5em;
 }
 
@@ -221,7 +232,7 @@ div#gallery_items_panel_zoom div#track div#handle {
 
 .keyword {
 	color: #333;
-}            
+}
 
 /*#popups {
   height: 100%;
@@ -254,7 +265,3 @@ div#gallery_items_panel_zoom div#track div#handle {
 	margin-bottom: 10px;
 }
  */
-
-#content table#gallery_tree .remove a {
-	background-image: none !important;
-}
