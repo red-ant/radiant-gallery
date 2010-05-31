@@ -1,7 +1,7 @@
 <% include_stylesheet 'extensions/gallery/admin/gallery' %>
 <h1 id="new_page">New Keyword</h1>
 
-<% form_for :gallery, :url => { :action => :create }, :method => :post do |f| -%>
+<% form_for :keyword, :url => { :action => :create }, :method => :post do |f| -%>
   <%= render :partial => 'form', :locals => {:f => f} %>
 <% end -%>
 
