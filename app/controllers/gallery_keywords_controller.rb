@@ -23,7 +23,7 @@ class GalleryKeywordsController < ApplicationController
     flash[:notice] = "Keyword was successfully removed."
     
     respond_to do |format|
-      format.html { redirect_to(admin_galleries_url) }
+      format.html { redirect_to(edit_admin_gallery_url(@gallery)) }
       format.xml  { head :ok }
     end
   end
