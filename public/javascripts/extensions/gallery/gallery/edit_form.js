@@ -4,7 +4,7 @@ Gallery.EditForm = {
 
     init: function(popup, link) {    
 		
-        if (!this.submitHandler) this.initializeHandler();
+        if (!this.submitHandler) { this.initializeHandler(); }
         var item = link.up('.item');
         popup.down('form').setAttribute('action', link.getAttribute('href'));
 
@@ -27,12 +27,16 @@ Gallery.EditForm = {
     },
 
     show: function(popup) {  
-	
-			popup.show();            		
+
+		popup.show(); 
+		if( popup.centerInViewport ){
 			popup.centerInViewport();
-       popup.setStyle({
-           top: '100px'
-       });  
+		} else if( center ){
+			center( popup );
+		}
+		popup.setStyle({
+			top: '100px'
+		}); 
     },
 
     close: function() {
@@ -69,4 +73,4 @@ Gallery.EditForm = {
         });
 
     }
-}
+};
