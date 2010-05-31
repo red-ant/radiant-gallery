@@ -23,15 +23,15 @@
 				<span class="keyword">
 					<%= check_box_tag "keywords[]", keyword.id,  @gallery.gallery_keywords.include?(keyword) %>
 					<%= link_to keyword.keyword, edit_admin_gallery_keyword_path(@gallery, keyword) %>
-					<%= ' | ' %> 
+					<%= ' | ' unless @keywords.last == keyword %> 
 				</span>
 
 			<% end %>
 
 		<% end if @keywords.length > 0 %>
-		<span class="keyword">
+		<div class="keyword">
 			<%= text_field_tag 'new_keyword', GalleriesController::DefaultKeyword %>
-		</span>
+		</div>
 	</div>
 </div>  
 
