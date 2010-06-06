@@ -71,18 +71,17 @@ class GalleryItem < ActiveRecord::Base
     end
   end
   
-  def keywords                         
-    str = ''                 
+  def keywords(&block)                         
+    arr = []   
+    block ||= Proc.new {|v| v }
     if self.gallery_keywords.length > 0 
       self.gallery_keywords.uniq.each do |key|
-        str += key.keyword
-        str += ','
+        arr << block.call( key.keyword )
       end                         
-      str = str.slice(0..-2)                        
     else                
-      str += self.gallery.keywords          
+      arr << self.gallery.keywords          
     end                           
-    return str
+    return arr
   end           
   
   def keywords=(keywords) 
