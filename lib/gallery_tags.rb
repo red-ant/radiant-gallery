@@ -82,11 +82,11 @@ module GalleryTags
   end
   
   tag 'gallery:if_current' do |tag|    
-    tag.expand if @current_gallery
+    tag.expand if @current_gallery && @current_gallery == tag.locals.gallery
   end  
   
   tag 'gallery:unless_current' do |tag|    
-    tag.expand unless @current_gallery
+    tag.expand unless @current_gallery && @current_gallery == tag.locals.gallery
   end
   
   tag 'gallery:current' do |tag|    
