@@ -105,7 +105,7 @@ module GalleryItemTags
     Provides name for current gallery item, safe is to make safe for web }
   tag "gallery:item:name" do |tag|      
     item = find_item(tag)
-    name = tag.attr['safe'] ? item.name.downcase.gsub(/[\s~\.:;+=]+/, '_') : item.name
+    name = tag.attr['safe'] ? websafe( item.name ) : item.name
   end 
   
   desc %{
@@ -114,10 +114,9 @@ module GalleryItemTags
     Provides keywords for current gallery item, use 
     separator="separator_string" to specify the character between keywords}
   tag "gallery:item:keywords" do |tag|      
-    item = find_item(tag)    
-    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' '  
-    keys = tag.attr['safe'] ? item.keywords.downcase.gsub(/[\s~\.:;+=]+/, '_') : item.keywords
-    keys.gsub(/\,/, joiner);
+    item = find_item(tag)   
+    keys = tag.attr['safe'] ? item.keywords { |k| websafe( k ) } : item.keywords
+    keys.join( tag.attr['separator'] ? tag.attr['separator'] : ' ' );
   end 
 
   desc %{
@@ -307,7 +306,10 @@ module GalleryItemTags
   end
 
 protected
-
+  def websafe( string )
+    string.gsub(/[\s~\.,:;+=]+/, '_').downcase
+  end
+  
   def find_item(tag)
     if tag.locals.item 
       tag.locals.item

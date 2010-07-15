@@ -82,11 +82,11 @@ module GalleryTags
   end
   
   tag 'gallery:if_current' do |tag|    
-    tag.expand if @current_gallery
+    tag.expand if @current_gallery && @current_gallery == tag.locals.gallery
   end  
   
   tag 'gallery:unless_current' do |tag|    
-    tag.expand unless @current_gallery
+    tag.expand unless @current_gallery && @current_gallery == tag.locals.gallery
   end
   
   tag 'gallery:current' do |tag|    
@@ -124,7 +124,7 @@ module GalleryTags
     Provides name for current gallery, safe is to make safe for web }
   tag "gallery:name" do |tag|
     gallery = tag.locals.gallery
-    name = tag.attr['safe'] ? gallery.name.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery.name
+    name = tag.attr['safe'] ? websafe( gallery.name ) : gallery.name
   end
 
   desc %{
@@ -142,10 +142,9 @@ module GalleryTags
     Provides keywords for current and children galleries, use
     separator="separator_string" to specify the character between keywords }
   tag "gallery:keywords" do |tag|
-    gallery = tag.locals.gallery    
-    joiner = tag.attr['separator'] ? tag.attr['separator'] : ' ' 
-    keys = tag.attr['safe'] ? gallery.keywords.gsub(/[\s~\.:;+=]+/, '_').downcase : gallery.keywords
-    keys.gsub(/\,/, joiner)
+    gallery = tag.locals.gallery     
+    keys = tag.attr['safe'] ? gallery.keywords{ |k| websafe(k) } : gallery.keywords
+    keys.join( tag.attr['separator'] ? tag.attr['separator'] : ' ' )
     tag.expand
   end                            
 
@@ -169,7 +168,7 @@ module GalleryTags
     Get the keyword of the current gallery:keywords loop } 
   tag 'gallery:keywords:keyword' do |tag|
     keyword = tag.locals.uniq_keyword.keyword
-    k = tag.attr['safe'] ? keyword.gsub(/[\s~\.:;+=]+/, '_').downcase : keyword
+    k = tag.attr['safe'] ? websafe( keyword ) : keyword
   end
        
   desc %{
@@ -375,6 +374,10 @@ module GalleryTags
   
 
   protected
+
+  def websafe( string )
+    string.gsub(/[\s~\.,:;+=]+/, '_').downcase
+  end 
   
   def find_gallery(tag)  
     if tag.locals.gallery
