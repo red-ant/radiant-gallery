@@ -35,7 +35,7 @@ spinner = image('spinner.gif', :class => 'busy', :id => "gallery-busy-#{gallery.
 	</td>	
 	<td class="status"><%= gallery.id %></td>
 	<td class="status published-status"><%= gallery.hidden ? 'hidden' : 'visible' %></td>
-	<td class="add-child"><%= link_to image_tag('extensions/gallery/admin/add-child.png', :alt => 'add child'), new_admin_gallery_child_path(gallery) %></td>
-	<td class="remove-child"><%= link_to image_tag('extensions/gallery/admin/remove.png', :alt => 'remove gallery'), admin_gallery_path(gallery), :method => 'delete', :confirm => 'Are you sure?' %></td>
+	<td class="add_child"><%= link_to "Add Child", new_admin_gallery_child_path(gallery)%></td>
+	<td class="remove"><%= link_to "Remove", admin_gallery_path(gallery), :method => 'delete', :confirm => 'Are you sure?' %></td>
   <td class="reorder-children"><%= link_to image_tag('extensions/gallery/admin/reorder-children.png', :alt => 'reorder children'), reorder_admin_gallery_path(gallery) unless gallery.children_count == 0 %></td>
 </tr>
