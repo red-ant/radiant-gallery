@@ -81,23 +81,43 @@ module GalleryTags
     tag.expand unless tag.locals.gallery.nil? && tag.attr['fail_silently']
   end
   
+  desc %{    
+    Usage:
+    <pre><code><r:gallery:if_current>...render content...</r:gallery:if_current></code></pre> 
+    If gallery is current continue }  
   tag 'gallery:if_current' do |tag|    
     tag.expand if @current_gallery && @current_gallery == tag.locals.gallery
   end  
-  
+
+  desc %{    
+    Usage:
+    <pre><code><r:gallery:unless_current>...render content...</r:gallery:unless_current></code></pre> 
+    Unless gallery is current continue }  
   tag 'gallery:unless_current' do |tag|    
     tag.expand unless @current_gallery && @current_gallery == tag.locals.gallery
   end
-  
+
+  desc %{    
+    Usage:
+    <pre><code><r:gallery:current>...render content...</r:gallery:current></code></pre> 
+    For the current gallery content }  
   tag 'gallery:current' do |tag|    
     tag.locals.gallery = @current_gallery
     tag.expand
   end
 
+  desc %{    
+    Usage:
+    <pre><code><r:gallery:keywords:if_current>...render content...</r:gallery:keywords:if_current></code></pre> 
+    If gallery keywords are available continue }
   tag 'gallery:keywords:if_current' do |tag|    
     tag.expand if @current_keywords
   end  
-  
+
+  desc %{    
+    Usage:
+    <pre><code><r:gallery:keywords:unless_current>...render content...</r:gallery:keywords:unless_current></code></pre> 
+    Unless gallery keywords are available continue }
   tag 'gallery:keywords:unless_current' do |tag|    
     tag.expand unless @current_keywords
   end
@@ -192,14 +212,6 @@ module GalleryTags
     text = tag.double? ? tag.expand : tag.render('name')  
     gallery_url = File.join(tag.render('url'))
     %{<a href="#{gallery_url[0..-2]}?keywords=#{keyword.gsub(/[\s~\.:;+=]+/, '_')}"#{attributes}>#{keyword}</a>}
-  end
-  
-  tag 'gallery:keywords:if_current' do |tag|    
-    tag.expand if @current_keywords
-  end  
-  
-  tag 'gallery:keywords:unless_current' do |tag|    
-    tag.expand unless @current_keywords
   end
   
   desc %{                 
