@@ -111,7 +111,7 @@ module GalleryPageExtensions
     current_gallery = nil    
     while slug = slugs.shift do
       unless current_gallery        
-        current_gallery = Gallery.find_by_slug(slug, :conditions => {:parent_id => self.base_gallery_id || nil}) 
+        current_gallery = Gallery.find_by_slug( slug ) || Gallery.find( self.base_gallery_id ) 
       else
         current_gallery = current_gallery.children.find_by_slug(slug)
       end
