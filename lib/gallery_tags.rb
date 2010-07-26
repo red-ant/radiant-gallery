@@ -201,7 +201,7 @@ module GalleryTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:keywords:link [*options]/></code></pre>
+    <pre><code><r:gallery:keywords:link [*options] [current_gallery='use']/></code></pre>
     Get the keyword and creates a link for the current gallery:keywords loop 
     options are rendered inline as key:value pairs i.e. class='' id='', etc.}    
   tag 'gallery:keywords:link' do |tag|
@@ -209,9 +209,8 @@ module GalleryTags
     options = tag.attr.dup
     attributes = options.inject('') { |s, (k, v)| s << %{#{k.downcase}="#{v}" } }.strip
     attributes = " #{attributes}" unless attributes.empty?
-    text = tag.double? ? tag.expand : tag.render('name')  
-    gallery_url = File.join(tag.render('url'))
-    %{<a href="#{gallery_url[0..-2]}?keywords=#{keyword.gsub(/[\s~\.:;+=]+/, '_')}"#{attributes}>#{keyword}</a>}
+    gallery_url = File.join( tag.render('url'), tag.attr['current_gallery'] ? tag.locals.gallery.slug : '' ).gsub(/\/$/,'')
+    %{<a href="#{gallery_url}?keywords=#{keyword.gsub(/[\s~\.:;+=]+/, '_')}"#{attributes}>#{keyword}</a>}
   end
   
   desc %{                 
@@ -228,8 +227,13 @@ module GalleryTags
       content << tag.expand
     end
     key = content.blank? ? @current_keywords.join( joiner ) : content
-  end  
+  end
   
+  desc %{
+     Usage:
+     <pre><code><r:gallery:breadcrumbs /></code></pre>
+     Breadcrumb to the current gallery 
+  }  
   tag 'gallery:breadcrumbs' do |tag|
     gallery = find_gallery(tag)
     breadcrumbs = []

@@ -193,11 +193,15 @@ module GalleryItemTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:page_url/></code></pre>
-    Provides page url for current gallery item }
+    <pre><code><r:gallery:item:page_url [page_url='/page-slug/'] /></code></pre>
+    Provides page url for current gallery item. 
+    *Note:* page_url is optional for specifying a page different to the current }
   tag "gallery:item:page_url" do |tag|
     item = find_item(tag)
-    File.join(tag.render('url'), item.gallery.url(self.base_gallery_id), "#{item.id}.#{item.extension}/show")
+    url = tag.attr['base_url'] ? tag.attr['base_url'] : self.url
+    url = File.join( url, item.gallery.url( self.base_gallery_id ), "#{item.id}.#{item.extension}/show" )
+    url = '/' + url unless url =~ /^\//
+    url
   end
   
   desc %{    
@@ -248,25 +252,33 @@ module GalleryItemTags
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:next_page_url /></code></pre>
-    Provides page url for next gallery item }
+    <pre><code><r:gallery:item:next_page_url [page_url='/page-slug/'] /></code></pre>
+    Provides page url for next gallery item.
+    *Note:* page_url is optional for specifying a page different to the current }
   tag "gallery:item:next_page_url" do |tag|
     item = find_item(tag)    
     unless item.last?
-      next_item = GalleryItem.find(:first, :conditions => ["gallery_id = ? AND position = ? AND parent_id IS NULL", item.gallery.id, item.position + 1, ]) #item.lower_item      
-      File.join(tag.render('url'), @current_gallery.url(self.base_gallery_id), "#{next_item.id}.#{next_item.extension}/show")
+      next_item = GalleryItem.find(:first, :conditions => ["gallery_id = ? AND position = ? AND parent_id IS NULL", item.gallery.id, item.position + 1, ]) #item.lower_item
+      url = tag.attr['base_url'] ? tag.attr['base_url'] : tag.locals.page.url
+      url = File.join(url, @current_gallery.url(self.base_gallery_id), "#{next_item.id}.#{next_item.extension}/show") 
+      url = '/' + url unless url =~ /^\//
+      url
     end
   end
   
   desc %{
     Usage:
-    <pre><code><r:gallery:item:prev_page_url /></code></pre>
-    Provides page url for previous gallery item }
+    <pre><code><r:gallery:item:prev_page_url [page_url='/page-slug/'] /></code></pre>
+    Provides page url for previous gallery item,
+    *Note:* page_url is optional for specifying a page different to the current }
   tag "gallery:item:prev_page_url" do |tag|
     item = find_item(tag)
     unless item.position == 0
       prev_item = GalleryItem.find(:first, :conditions => ["gallery_id = ? AND position = ? AND parent_id IS NULL", item.gallery.id, item.position - 1, ]) #item.higher_item
-      File.join(tag.render('url'), @current_gallery.url(self.base_gallery_id), "#{prev_item.id}.#{prev_item.extension}/show")
+      url = tag.attr['base_url'] ? tag.attr['base_url'] : tag.locals.page.url
+      url = File.join(url, @current_gallery.url(self.base_gallery_id), "#{prev_item.id}.#{prev_item.extension}/show")
+      url = '/' + url unless url =~ /^\//
+      url
     end
   end
   
