@@ -23,7 +23,7 @@ Then install the Gallery extension:
   
   git clone git://github.com/hairballopolis/radiant-gallery.git vendor/extensions/gallery
   cd vendor/extensions/gallery
-  git checkout 0.8.1 or the latest stable version in line with the current radiant version
+  git checkout 0.9.1 or the latest stable version in line with the current radiant version - master
 
 Now you can run the install task:
 
@@ -152,8 +152,21 @@ If you want to generate that thumbnail just after the upload of the image, add t
                 
 == Contributors
 
-* Version: 0.3.0  - Adam Salter - http://10outta10.com
-* Version: 0.7 - 0.8.* - Tom Cowell - http://eightsquarestudio.com
+Thomas Cowell – hairballopolis – Maintainer
+Andrea Franz – pilu – Author
+Benny Degezelle – jomz
+Edmund Haselwanter – ehaselwanter
+Philipp Ringli – cmyk
+Levi Cole – levicole
+Nikos Dimitrakopoulos – nikosd
+Chris Moore – cdmwebs
+Will Prater – wprater
+Ivan Yatskevich – yatskevich
+Adam Salter - adamsalter
+wdso
+mariozig
+dip00dip
+kalebwalton
 
 == Credits
 
