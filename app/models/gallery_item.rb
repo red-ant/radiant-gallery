@@ -38,7 +38,11 @@ class GalleryItem < ActiveRecord::Base
   before_destroy :update_positions
   
   after_attachment_saved do |item|
-    item.generate_default_thumbnails if item.parent.nil?
+	if item.parent.nil? then
+		item.generate_default_thumbnails
+		# load exif data of original file
+		item.create_item_infos
+	end
   end       
 
   before_thumbnail_saved do |thumbnail|
@@ -125,6 +129,17 @@ class GalleryItem < ActiveRecord::Base
     end
   end  
   
+   def create_item_infos
+	if self.jpeg? then
+		picture = EXIFR::JPEG.new(self.full_filename)
+		names = %w{model date_time_original exposure_time f_number focal_length iso_speed_ratings}
+		names.each do |name|
+			eval_string = "picture.exif." + name.to_s
+			self.infos.create(:gallery_item_id => self.id, :name => name, :value_string => eval(eval_string).to_s)
+		end
+	end
+  end  
+
   protected
 
   def set_filename_as_name
@@ -156,5 +171,5 @@ class GalleryItem < ActiveRecord::Base
     scale_ratio = (pic_ratio > aspect_ratio) ?  max_width.to_f / width.to_f : max_height.to_f / height.to_f  
     [(width * scale_ratio).to_i, (height * scale_ratio).to_i]
   end
-    
+     
 end
