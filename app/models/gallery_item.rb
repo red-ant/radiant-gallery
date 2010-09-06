@@ -134,8 +134,11 @@ class GalleryItem < ActiveRecord::Base
 		picture = EXIFR::JPEG.new(self.full_filename)
 		names = %w{model date_time_original exposure_time f_number focal_length iso_speed_ratings}
 		names.each do |name|
-			eval_string = "picture.exif." + name.to_s
-			self.infos.create(:gallery_item_id => self.id, :name => name, :value_string => eval(eval_string).to_s)
+			value = eval("picture.exif." + name)
+			# f_numbers are stored as rationals (f 4.5 equals to in camera f_number value '9/2')
+			# if doing just to_f, the value will be stored as integer in database (4.5 -> 4)
+			value = value.to_f.to_s if name == "f_number"
+			self.infos.create(:gallery_item_id => self.id, :name => name, :value => value)
 		end
 	end
   end  
