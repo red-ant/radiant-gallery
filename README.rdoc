@@ -10,6 +10,7 @@ A Radiant (http://radiantcms.org) extension by Andrea Franz (http://gravityblast
 * Images/Files sorting by drag-n-drop
 * Automatic thumbnail generation for images after upload
 * Preview in lightwindow for images
+* Display Exif data of jpeg files
   
 == Installation
 
@@ -38,7 +39,8 @@ Inside that file there are some variables you can edit:
 * processor: The processor used to create thumbnails (rmagick | image_science | mini_magick).
 * default_thumbnails: a list of thumbnails that will be generated after each upload.    
 * max_size: size in kilobytes for the maximum allowed size of image to be processed and added.
-* storage: The type of storage to use (:file_system | :db_file | :s3 | :cloud_files) ], the default is :file_system  
+* storage: The type of storage to use (:file_system | :db_file | :s3 | :cloud_files) ], the default is :file_system 
+* exif_names: The names of exif values, that will be stored on upload of jpegs
 
 	path_prefix: public/galleries
 	processor: rmagick  
@@ -49,8 +51,15 @@ Inside that file there are some variables you can edit:
 	  admin_thumb: 300x300   # do not remove
 	  admin_preview: 500x500 # do not remove
 	  small: 150x
-	  large: 450x 
-
+	  large: 450x
+	exif_names:
+	  model
+	  date_time_original
+	  exposure_time
+	  f_number
+	  focal_length
+	  iso_speed_ratings
+	  
 storage can be updated by also config/environment.rb
 
 	config/environment.rb
@@ -59,6 +68,7 @@ storage can be updated by also config/environment.rb
 	    Radiant::Config["gallery.storage"] = "file_system"
 	  end                                         
 
+For a discussion on exif_names see bottom of this document.
   
 == Documentation
 
@@ -149,6 +159,23 @@ If you want to generate that thumbnail just after the upload of the image, add t
     admin_preview: 500x500 # do not remove
     small: 200x100 # this is the signature you use in the page.
     square: c90x90 # specific sized images with a center crop
+
+=== Displaying exif data of jpeg files
+
+If Your jpeg's contain exif data, the data will be stored on upload. An example usage in a list:
+
+    <r:gallery:item:infos:each>
+	  <li><r:gallery:item:info:name />: <r:gallery:item:info:value /> </li>
+	</r:gallery:item:infos:each>
+
+Or, to display a specific name/value pair (here the camera model):
+
+    <r:gallery:item:info:name name="model" />
+	<r:gallery:item:info:value name="model" />
+
+Note, that only name/value pairs can be displayed, which are defined in the gallery configuration file (see above). For example,
+if You want to display the flash status while taking Your picture, add the 'flash' name to Your config file under exif_names.
+Possible values of exif_names for Your camera can be found in the Internet.
                 
 == Contributors
 
@@ -167,6 +194,7 @@ wdso
 mariozig
 dip00dip
 kalebwalton
+Horst Rischbode - horibo
 
 == Credits
 

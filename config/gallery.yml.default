@@ -8,3 +8,10 @@ default_thumbnails:
   admin_preview: 500x500 # do not remove
   small: 150x
   large: 450x
+exif_names:
+  model
+  date_time_original
+  exposure_time
+  f_number
+  focal_length
+  iso_speed_ratings
