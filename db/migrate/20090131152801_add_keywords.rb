@@ -18,8 +18,7 @@ class AddKeywords < ActiveRecord::Migration
     
   end
   
-  def self.down                         
-    drop_table :table_name
+  def self.down
     drop_table :gallery_items_keywords
     drop_table :galleries_keywords
     drop_table :gallery_keywords
