@@ -1,7 +1,6 @@
 module GalleryItemTags
   #tags available globally, not just on GalleryPages
   include Radiant::Taggable
-  include ActionView::Helpers::AssetTagHelper
   
   class GalleryTagError < StandardError; end
   
@@ -171,7 +170,7 @@ module GalleryItemTags
     Provides link for current gallery item }
   tag "gallery:item:link" do |tag|  
     item = find_item(tag)
-    %{<a href="#{item.public_filename}">#{item.name}</a>}
+    %{<a href="#{image_path(item)}">#{item.name}</a>}
   end
   
   desc %{
@@ -189,7 +188,7 @@ module GalleryItemTags
     Provides path for current gallery item }
   tag "gallery:item:path" do |tag|
     item = find_item(tag)
-    response.template.send(:path_to_image, item.public_filename)
+    image_path(item)
 end
   
   desc %{
@@ -310,7 +309,7 @@ end
     item = find_item(tag)
     options = {}
     [:width, :height, :prefix, :geometry].each{|symbol| options[symbol] = tag.attr[symbol.to_s] if tag.attr[symbol.to_s] }
-    item.thumb(options).public_filename
+    image_path(item.thumb(options))
   end
   
   tag 'gallery:children' do |tag|
@@ -334,6 +333,10 @@ protected
       position = gallery.items.count if tag.attr['position'] == 'last'
       i = gallery.items.find_by_position(position.to_i)    
     end
+  end
+  
+  def image_path(image)
+    response.template.send(:path_to_image, image.public_filename)
   end
 
 end
