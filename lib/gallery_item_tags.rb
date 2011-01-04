@@ -1,6 +1,7 @@
 module GalleryItemTags
   #tags available globally, not just on GalleryPages
-  include Radiant::Taggable          
+  include Radiant::Taggable
+  include ActionView::Helpers::AssetTagHelper
   
   class GalleryTagError < StandardError; end
   
@@ -188,8 +189,8 @@ module GalleryItemTags
     Provides path for current gallery item }
   tag "gallery:item:path" do |tag|
     item = find_item(tag)
-    item.public_filename
-  end
+    response.template.send(:path_to_image, item.public_filename)
+end
   
   desc %{
     Usage:
