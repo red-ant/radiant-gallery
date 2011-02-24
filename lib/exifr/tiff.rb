@@ -1,6 +1,8 @@
-# Copyright (c) 2007, 2008, 2009 - R.W. van 't Veer
+# Copyright (c) 2007, 2008, 2009, 2010, 2011 - R.W. van 't Veer
 
+require 'exifr'
 require 'rational'
+require 'enumerator'
 
 module EXIFR
   # = TIFF decoder
@@ -255,6 +257,11 @@ module EXIFR
         @value
       end
 
+      # Debugging output.
+      def inspect
+        "\#<EXIFR::TIFF::Orientation:#{@type}(#{@value})>"
+      end
+
       # Rotate and/or flip for proper viewing.
       def transform_rmagick(img)
         case @type
@@ -405,16 +412,15 @@ module EXIFR
       def height; image_length; end
 
       def to_hash
-        @hash ||= begin
-          result = @fields.dup
-          result.delete_if { |key,value| value.nil? }
-          result.each do |key,value|
-            if IFD_TAGS.include? key
-              result.merge!(value.to_hash)
-              result.delete key
-            end
+        @hash ||= @fields.map do |key,value|
+          if value.nil?
+            {}
+          elsif IFD_TAGS.include?(key)
+            value.to_hash
+          else
+            {key => value}
           end
-        end
+        end.inject { |m,v| m.merge(v) } || {}
       end
 
       def inspect
@@ -452,38 +458,74 @@ module EXIFR
 
       def initialize(data, pos)
         @tag, count, @offset = data.readshort(pos), data.readlong(pos + 4), data.readlong(pos + 8)
+        @type = data.readshort(pos + 2)
 
-        case data.readshort(pos + 2)
-        when 1, 6 # byte, signed byte
-          # TODO handle signed bytes
+        case @type
+        when 1 # byte
           len, pack = count, proc { |d| d }
+        when 6 # signed byte
+          len, pack = count, proc { |d| sign_byte(d) }
         when 2 # ascii
-          len, pack = count, proc { |d| d.strip }
-        when 3, 8 # short, signed short
-          # TODO handle signed
+          len, pack = count, proc { |d| d.unpack("A*") }
+        when 3 # short
           len, pack = count * 2, proc { |d| d.unpack(data.short + '*') }
-        when 4, 9 # long, signed long
-          # TODO handle signed
+        when 8 # signed short
+          len, pack = count * 2, proc { |d| d.unpack(data.short + '*').map{|n| sign_short(n)} }
+        when 4 # long
           len, pack = count * 4, proc { |d| d.unpack(data.long + '*') }
-        when 5, 10
+        when 9 # signed long
+          len, pack = count * 4, proc { |d| d.unpack(data.long + '*').map{|n| sign_long(n)} }
+        when 7 # undefined
+          # UserComment
+          if @tag == 0x9286
+            len, pack = count, proc { |d| d.strip }
+            len -= 8 # reduce to account for first 8 bytes
+            start = len > 4 ? @offset + 8 : (pos + 8) # UserComment first 8-bytes is char code
+            @value = [pack[data[start..(start + len - 1)]]].flatten
+          end
+        when 5 # unsigned rational
           len, pack = count * 8, proc do |d|
-            r = []
-            d.unpack(data.long + '*').each_with_index do |v,i|
-              i % 2 == 0 ? r << [v] : r.last << v
+            rationals = []
+            d.unpack(data.long + '*').each_slice(2) do |f|
+              rationals << rational(*f)
             end
-            r.map do |f|
-              if f[1] == 0 # allow NaN and Infinity
-                f[0].to_f.quo(f[1])
-              else
-                Rational.respond_to?(:reduce) ? Rational.reduce(*f) : f[0].quo(f[1])
-              end
+            rationals
+          end
+        when 10 # signed rational
+          len, pack = count * 8, proc do |d|
+            rationals = []
+            d.unpack(data.long + '*').map{|n| sign_long(n)}.each_slice(2) do |f|
+              rationals << rational(*f)
             end
+            rationals
           end
         end
 
-        if len && pack
+        if len && pack && @type != 7
           start = len > 4 ? @offset : (pos + 8)
-          @value = [pack[data[start..(start + len - 1)]]].flatten
+          d = data[start..(start + len - 1)]
+          @value = d && [pack[d]].flatten
+        end
+      end
+
+    private
+      def sign_byte(n)
+        (n & 0x80) != 0 ? n - 0x100 : n
+      end
+
+      def sign_short(n)
+        (n & 0x8000) != 0 ? n - 0x10000 : n
+      end
+
+      def sign_long(n)
+        (n & 0x80000000) != 0 ? n - 0x100000000 : n
+      end
+
+      def rational(n, d)
+        if d == 0 # allow NaN and Infinity
+          n.to_f.quo(d)
+        else
+          Rational.respond_to?(:reduce) ? Rational.reduce(n, d) : n.quo(d)
         end
       end
     end
@@ -499,7 +541,8 @@ module EXIFR
         case self[0..1]
         when 'II'; @short, @long = 'v', 'V'
         when 'MM'; @short, @long = 'n', 'N'
-        else; raise 'no II or MM marker found'
+        else
+          raise MalformedTIFF, "no byte order information found"
         end
       end
 
@@ -512,7 +555,7 @@ module EXIFR
           read_for(pos)
         end
 
-        @buffer[(pos.begin - @pos)..(pos.end - @pos)]
+        @buffer && @buffer[(pos.begin - @pos)..(pos.end - @pos)]
       end
 
       def readshort(pos)

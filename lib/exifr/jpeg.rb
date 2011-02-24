@@ -1,5 +1,6 @@
-# Copyright (c) 2006, 2007, 2008, 2009 - R.W. van 't Veer
+# Copyright (c) 2006, 2007, 2008, 2009, 2010, 2011 - R.W. van 't Veer
 
+require 'exifr'
 require 'stringio'
 
 module EXIFR
@@ -20,6 +21,10 @@ module EXIFR
     attr_reader :comment
     # EXIF data if available
     attr_reader :exif
+    # raw EXIF data
+    attr_reader :exif_data # :nodoc:
+    # raw APP1 frames
+    attr_reader :app1s
 
     # +file+ is a filename or an IO object.  Hint: use StringIO when working with slurped data like blobs.
     def initialize(file)
@@ -84,25 +89,30 @@ module EXIFR
         end
       end unless io.respond_to? :readsof
 
-      raise 'malformed JPEG' unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
+      unless io.readbyte == 0xFF && io.readbyte == 0xD8 # SOI
+        raise MalformedJPEG, "no start of image marker found"
+      end
 
-      app1s = []
+      @app1s = []
       while marker = io.next
         case marker
           when 0xC0..0xC3, 0xC5..0xC7, 0xC9..0xCB, 0xCD..0xCF # SOF markers
             length, @bits, @height, @width, components = io.readsof
-            raise 'malformed JPEG' unless length == 8 + components * 3
+            unless length == 8 + components * 3
+              raise MalformedJPEG, "frame length does not match number of components"
+            end
           when 0xD9, 0xDA;  break # EOI, SOS
           when 0xFE;        (@comment ||= []) << io.readframe # COM
-          when 0xE1;        app1s << io.readframe # APP1, may contain EXIF tag
+          when 0xE1;        @app1s << io.readframe # APP1, may contain EXIF tag
           else              io.readframe # ignore frame
         end
       end
 
       @comment = @comment.first if @comment && @comment.size == 1
 
-      if app1 = app1s.find { |d| d[0..5] == "Exif\0\0" }
-        @exif = TIFF.new(StringIO.new(app1[6..-1]))
+      if app1 = @app1s.find { |d| d[0..5] == "Exif\0\0" }
+        @exif_data = app1[6..-1]
+        @exif = TIFF.new(StringIO.new(@exif_data))
       end
     end
   end
