@@ -25,6 +25,7 @@ Then install the Gallery extension:
   git clone git://github.com/hairballopolis/radiant-gallery.git vendor/extensions/gallery
   cd vendor/extensions/gallery
   git checkout 0.9.1 or the latest stable version in line with the current radiant version - master
+  gem install exifr --version=1.1.1
 
 Now you can run the install task:
 
