@@ -2,7 +2,7 @@ require 'tempfile'
 require 'open-uri'
 require 'exifr'   # as taken from https://github.com/remvee/exifr
 
-require_dependency Radiant::Version.to_s.to_f < 0.8 ? 'application' : 'application_controller'   
+require_dependency 'application_controller'  
 
 class GalleryExtensionError < StandardError; end
 
@@ -13,21 +13,10 @@ class GalleryExtension < Radiant::Extension
   
   def activate
     init       
-    if Radiant::Version.to_s.to_f < 0.9 
-      tab_options = {:visibility => [:all]}
       
-      if Radiant::Config.table_exists?
-        Radiant::Config["gallery.gallery_based"] == 'true' ? tab_options[:before] = "Pages" : tab_options[:after] = "Layouts"
-      end
-      
-      admin.tabs.add("Galleries", "/admin/galleries", tab_options)      
-    else
-      
-      tab "Content" do
-         add_item("Galleries", "/admin/galleries", {:visibility => [:all]}) 
-      end      
-    end    
-
+    tab "Content" do
+       add_item("Galleries", "/admin/galleries", {:visibility => [:all]}) 
+    end      
     admin.page.edit.add :layout_row, 'base_gallery' if admin.respond_to?(:page)
   end      
   
