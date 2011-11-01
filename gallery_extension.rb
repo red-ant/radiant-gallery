@@ -1,6 +1,6 @@
 require 'tempfile'           
 require 'open-uri'
-require 'exifr'
+require 'exifr'   # as taken from https://github.com/remvee/exifr
 
 require_dependency Radiant::Version.to_s.to_f < 0.8 ? 'application' : 'application_controller'   
 
