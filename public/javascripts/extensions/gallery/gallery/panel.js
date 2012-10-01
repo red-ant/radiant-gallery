@@ -85,7 +85,7 @@ Gallery.Panel = Class.create({
 		  method: 'put',
 			parameters: {
 				id: id, old_position: old_position, new_position: new_position,
-				authenticity_token: this.authenticity_tokens
+				authenticity_token: this.authenticity_token
 			}
 		});
 	}
