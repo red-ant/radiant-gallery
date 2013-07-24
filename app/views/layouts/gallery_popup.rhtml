@@ -1,66 +1,94 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>New file</title>
-	<%= javascript_include_tag 'extensions/gallery/prototype' %>
-	<%= javascript_include_tag 'extensions/gallery/effects' %>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>New file</title>
+  <script type="text/javascript">
+    window._authenticity_token = '<%= "#{form_authenticity_token}" %>';
+  </script>
+  <%= javascript_include_tag 'prototype' %>
+  <%= javascript_include_tag 'effects' %>
+  <%= javascript_include_tag 'swfupload/swfupload' %>
+  <%= javascript_include_tag 'swfupload/swfupload.cookies' %>
+  <%= javascript_include_tag 'swfupload/swfupload.queue' %>
+  <%= javascript_include_tag 'swfupload/swfupload.speed' %>
+  <%= javascript_include_tag 'jhandlers' %>
+  <%= stylesheet_link_tag 'admin/asset_uploader' %>
 
-	<style type="text/css" media="screen">
-    body { font-family: "Lucida Grande","Bitstream Vera Sans",Helvetica,Verdana,Arial,sans-serif; margin: 0; }
-    #header, #footer, #content { padding: 20px 10px;}
+  <style type="text/css" media="screen">
+    body {
+      font-family: "Lucida Grande","Bitstream Vera Sans",Helvetica,Verdana,Arial,sans-serif;
+      margin: 0
+    }
+    #header,
+    #footer,
+    #content {
+      padding: 20px 10px
+    }
     #header {
       position: relative;
-      background: #CC0000 url(/images/admin/navigation_background.gif) repeat-x scroll 0 0; 
+      background-color: #C00;
       color: #FFF;
-      padding: 0;
+      padding: 0
     }
     #navigation {
-      font-size:90%;
-      line-height:100%;
-      margin-bottom:-20px;
-      margin-top:-5px;
-      padding:0.6em 20px 0.5em 0.5em;
-      text-align:right;
+      border-bottom: 1px solid #C00;
+      font-size: 90%;
+      line-height: 100%;
+      margin-bottom: -20px;
+      padding: 20px 20px 0.5em 0.5em;
+      text-align: right
     }
-    #navigation a, #navigation a:visited {
+    #navigation a,
+    #navigation a:visited {
       background-color: #eae3c5;
       color: black;
       display: inline;
       padding: .5em;
       padding-left: .9em;
       padding-right: .9em;
-      text-decoration: none;
+      text-decoration: none
     }
-    #navigation a:hover, #navigation a:visited:hover {
-      text-decoration: underline;
+    #navigation a:hover,
+    #navigation a:visited:hover {
+      text-decoration: underline
     }
-    #navigation strong a, #navigation strong a:visited {
-      background-color: white;
+    #navigation strong a,
+    #navigation strong a:visited {
+      background-color: #FFF
     }
     #navigation .separator {
-      display: none;
+      display: none
     }
-
-    
-    div.form-area div.form-container { background: #F5F1E2; padding: 10px 5px; border: 5px solid #EFEAD3; margin: 10px 0; }
-    input { font-size: 120%; }
-	</style>
+    .form-area .form-container {
+      background: #F5F1E2;
+      padding: 10px 5px;
+      border: 5px solid #EFEAD3;
+      margin: 10px 0
+    }
+    input {
+      font-size: 120%
+    }
+  </style>
 </head>
 <body id="<%= @gallery.id %>">
+  <% content_for :page_scripts do %>
+    window._authenticity_token = '<%= form_authenticity_token %>';
+  <% end %>
   <div id="container">
     <div id="header">
       <div id="navigation">
-        <%= gallery_popup_tab_link_to 'GalleryItems', 'New File', new_admin_gallery_item_path(@gallery) %>
+        <%= gallery_popup_tab_link_to 'GalleryItems', 'Upload File', new_admin_gallery_item_path(@gallery) %>
+        <span class="separator"> | </span>
+        <%= gallery_popup_tab_link_to 'GalleryItemsMultiple', 'Multiple Upload', new_admin_gallery_multiple_path(@gallery) %>
         <span class="separator"> | </span>
         <%= gallery_popup_tab_link_to 'GalleryImportings', 'Import Files', new_admin_gallery_importing_path(@gallery) %>
       </div>
     </div>
-    <div id="content">      
+    <div id="content">
       <%= yield %>
     </div>
-    <div id="footer">
-    </div>
+    <div id="footer"></div>
   </div>
 </body>
 </html>

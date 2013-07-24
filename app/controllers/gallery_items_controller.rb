@@ -5,6 +5,21 @@ class GalleryItemsController < ApplicationController
   
   before_filter :find_gallery
   before_filter :find_item, :only => [:show, :edit, :update, :destroy, :move]
+  
+  skip_before_filter :global_authenticate, :only => :swfupload
+  
+  def swfupload
+    params[:Filedata].content_type = MIME::Types.type_for(params[:Filedata].original_filename).to_s
+    @item = @gallery.items.new
+    @item.uploaded_data = params[:Filedata]
+    @item.save!
+    #render :text => @item.public_filename(:thumb)
+    render :nothing => true
+  rescue => e
+    @error = e
+    logger.warn "multiple upload error: #{e.inspect}"
+    render :partial => 'upload_error', :layout => false, :status => 500    # SWFupload only cares about response status
+  end
          
   def index
   end   

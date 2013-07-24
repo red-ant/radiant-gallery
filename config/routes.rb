@@ -16,7 +16,12 @@ ActionController::Routing::Routes.draw do |map|
       } do |galleries|
         galleries.resources :children,    :controller => 'galleries', :path_prefix => '/admin/galleries/:parent_id'
         galleries.resources :items,       :controller => 'gallery_items', :member => { :move => :put }
+        galleries.resources :multiple,    :controller => 'gallery_items_multiple', :member => { :move => :put }
         galleries.resources :importings,  :controller => 'gallery_importings', :member => { :import => :put }
         galleries.resources :keywords,    :controller => 'gallery_keywords', :only => [ :edit, :update, :destroy ]
+        
+        galleries.with_options :controller => 'gallery_items' do |gallery_item|
+          gallery_item.upload_multiple "/items/swfupload" , :action => "swfupload"
+        end
     end
-end  
+end
