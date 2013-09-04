@@ -7,7 +7,7 @@
 <% end -%>
 
 <script type="text/javascript">
-	// <![CDATA[
-	  Field.activate('gallery_name');
-  // ]]>
+	Field.activate('gallery_name');
+	if (typeof tinyMCE != 'undefined')
+		tinyMCE.execCommand('mceAddControl', true, 'gallery_description');
 </script>
