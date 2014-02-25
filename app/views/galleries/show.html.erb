@@ -13,11 +13,11 @@
 <% include_javascript 'extensions/gallery/builder' %>
 <% include_javascript 'extensions/gallery/lightbox' %> 
 <% include_stylesheet 'extensions/gallery/lightbox' %>
-           
+
 <%= hidden_field_tag 'authenticity_token', form_authenticity_token if protect_against_forgery?  %>
 <h1 id="show_gallery"><%= @gallery.name %></h1>
 <% if flash[:gallery_external_html] -%>
-	<div id="external_html" style="margin-bottom:10px;"><%= flash[:gallery_external_html] %></div>
+  <div id="external_html" style="margin-bottom:10px;"><%= flash[:gallery_external_html] %></div>
 <% end -%> 
 
 <%= gallery_toolbar %>	
@@ -41,28 +41,27 @@
     <div style="display: none;" id="busy" class="busy"><img src="/images/admin/spinner.gif?1227891571" alt="Spinner"/></div>
     <h3>Edit Item</h3>
     <form>
-      <div>      
+      <div>
         <label for="edit-item-name">Name</label>
         <input type="text" id="edit-item-name" size="30">  
       </div>
-      <div>      
+      <div>
         <label for="edit-item-url">Link URL</label>
         <input type="text" id="edit-item-url" size="30">  
       </div>
-      <div>      
+      <div>
         <label for="edit-item-credits">Credits</label>
         <input type="text" id="edit-item-credits" size="30">  
       </div>
-      <div>      
+      <div>
         <label for="edit-item-description">Description</label>
         <textarea id="edit-item-description" cols="40" rows="12"></textarea>
-			</div>  
-			
-			<div>      
-				<label for="edit-item-keywords">Keywords</label>
-				<input type="text" id="edit-item-keywords" size="30">
+        <button id="edit-item-description-toggle-wysiwyg" onclick="Gallery.EditForm.toggleWysiwyg(); return false;">Toggle WYSIWYG</button>
       </div>
-
+      <div>
+        <label for="edit-item-keywords">Keywords</label>
+        <input type="text" id="edit-item-keywords" size="30">
+      </div>
       <p>
         <img id="edit-spinner" src="/images/admin/spinner.gif" style="display: none;"/>
         <input id="edit-submit" type="submit" value="Save" /> or <a onclick="Gallery.EditForm.close(); return false;" href="#" class="close-link">Close</a>
