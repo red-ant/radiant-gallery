@@ -34,7 +34,7 @@ Gallery.EditForm = {
 	},
 
 	initializeHandler: function() {
-		this.submitHandler = $('edit-gallery-item-popup').down('form').observe('submit', this.handleFormSubmit);
+		this.submitHandler = $('edit-gallery-item-popup').down('form').observe('submit', this.handleFormSubmit.bind(this));
 	},
 
 	open: function(link) {
@@ -89,7 +89,9 @@ Gallery.EditForm = {
 
 	handleFormSubmit: function(event) {
 		event.stop();
-		this.hideWysiwyg();
+		if(!$('edit-item-description').visible()) {
+			this.hideWysiwyg();
+		}
 		$('edit-spinner').show();
 		$('edit-submit').hide();
 		new Ajax.Request( event.target.getAttribute('action'), {
